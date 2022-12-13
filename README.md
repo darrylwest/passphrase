@@ -1,6 +1,6 @@
-# passphrase
+# PassPhrase
 
-A library and CLI to generate BIP39 and other dictionary based random words used as strong passphrases.
+A library and CLI that generates BIP39 and other dictionary based random words used as strong passphrases.
 
 ```bash
  ______                     ______ __                           
@@ -10,12 +10,12 @@ A library and CLI to generate BIP39 and other dictionary based random words used
 
 ```
 
-## Overview
+### Overview
 
-## CLI
+### CLI
 
-## Lib Use
+### Lib Use
 
-## Credits
+### Credits
 
 ###### darryl.west | 2022.12.12
