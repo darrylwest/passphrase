@@ -12,10 +12,22 @@ pub struct Config {
 impl Config {
     /// create a new config struct with default values
     pub fn new() -> Config {
+        Config::with_values(None, 12_usize, 20_usize)
+    }
+
+    /// create config with the seed
+    pub fn with_seed(seed: Option<usize>) -> Config {
+        Config::with_values(seed, 12_usize, 20_usize)
+    }
+
+    pub fn with_seed_and_word_count(seed: Option<usize>, word_count: usize) -> Config {
+        Config::with_values(seed, word_count, 20_usize)
+    }
+    pub fn with_values(seed: Option<usize>, word_count: usize, limit: usize) -> Config {
         Config {
-            seed: None,
-            word_count: 12,
-            limit: 20_usize,
+            seed,
+            word_count,
+            limit
         }
     }
 }
@@ -56,7 +68,10 @@ impl PassPhrase {
     pub fn generate_list(&self, config: Config) -> Phrases {
         info!("generate list with config: {:?}", &config);
 
-        let rng = fastrand::Rng::new();
+        let rng = match config.seed {
+            Some(seed) => fastrand::Rng::with_seed(seed as u64),
+            _ => fastrand::Rng::new(),
+        };
         let len = config.limit;
 
         let mut phrases = Vec::with_capacity(len);
