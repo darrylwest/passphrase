@@ -5,6 +5,8 @@ use std::env;
 
 fn main() -> Result<()> {
     // command line arg: --seed
+    let phrase = PassPhrase::new();
+
     if env::args().len() >= 2 {
         fastrand::seed(19501103);
     }
@@ -20,12 +22,12 @@ fn main() -> Result<()> {
 
     let rng = fastrand::Rng::new();
     (1..=count).for_each(|x| {
-        let idx_list = PassPhrase::generate_idx(&rng, size);
+        let idx_list = phrase.generate_idx(&rng, size);
         if show_indexes {
             println!("{} {:?}", x, &idx_list);
         }
 
-        let words = PassPhrase::get_words(idx_list);
+        let words = phrase.get_words(idx_list);
 
         println!("{:02} {}", x, words.join("-"));
     });
