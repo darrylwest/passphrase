@@ -1,36 +1,69 @@
 use anyhow::Result;
 use log::info;
 use passphrase::words::{Config, PassPhrase};
-use std::env;
+// use std::env;
+use clap::Parser;
+
+#[derive(Debug, Default, Parser)]
+#[clap(name = "passphrase-cli")]
+#[command(author, version, long_about = None)]
+#[clap(about = "passphrase-cli\nGenerate one or more strong passphrases.")]
+pub struct Cli {
+    /// set a seed for the ring generator
+    #[clap(long, value_parser)]
+    pub seed: Option<usize>,
+
+    /// show the index numbers with each phrase
+    #[clap(short, long, value_parser, default_value_t = false)]
+    pub show_indexes: bool,
+
+    /// set the number of words for each phrase
+    #[clap(short, long, value_parser, default_value_t = 12_u8)]
+    pub phrase_words: u8,
+
+    /// set the number of phrases to generate
+    #[clap(short, long, value_parser, default_value_t = 20_usize)]
+    pub lines: usize,
+
+    /// read the gernator configuration from the specified Toml file
+    #[clap(short, long, value_parser)]
+    pub config_file: Option<String>,
+}
+
+impl Cli {
+    pub fn new() -> Cli {
+        Cli::parse()
+    }
+}
 
 fn main() -> Result<()> {
     // command line arg: --seed
-    let pp = PassPhrase::new();
-
-    if env::args().len() >= 2 {
-        fastrand::seed(19501103);
-    }
-
-    // command line arg: --show-indexes
-    let show_indexes = false;
-
-    // command line arg: --size
-    // let size = 12_usize;
-
-    // command line arg: --count
-    // let count = 20_usize;
+    let cli = Cli::new();
+    info!("{:?}", cli);
 
     // the default
-    let config = Config::with_seed(Some(1950));
+    let pp = PassPhrase::new();
+    let config = Config::with_values(cli.seed, cli.phrase_words, cli.lines);
 
     let phrases = pp.generate_list(config);
     info!("{:?}", &phrases);
     for phrase in phrases.phrase_list {
-        if show_indexes {
-            println!("{} {:?}", &phrase.line_number, &phrase.index_list);
+        let mut buf = vec![];
+        if cli.show_indexes {
+            if cli.lines > 1 {
+                buf.push(format!("[{:02}] ", &phrase.line_number));
+            }
+
+            buf.push(format!("{:?}\n", &phrase.index_list));
         }
 
-        println!("{} {:?}", &phrase.line_number, &phrase.word_list.join("-"));
+        if cli.lines > 1 {
+            buf.push(format!("[{:02}] ", &phrase.line_number));
+        }
+
+        buf.push(format!("{:?}", &phrase.word_list.join("-")));
+
+        println!("{}", buf.join(""));
     }
 
     Ok(())

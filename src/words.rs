@@ -5,29 +5,32 @@ use crate::{BIP39_LENGTH, BIP39_WORDS};
 #[derive(Debug, Default, Clone, PartialEq, Eq)]
 pub struct Config {
     pub seed: Option<usize>,
-    pub word_count: usize,
+    pub word_count: u8,
     pub limit: usize,
 }
 
 impl Config {
     /// create a new config struct with default values
     pub fn new() -> Config {
-        Config::with_values(None, 12_usize, 20_usize)
+        Config::with_values(None, 12_u8, 20_usize)
     }
 
     /// create config with the seed
     pub fn with_seed(seed: Option<usize>) -> Config {
-        Config::with_values(seed, 12_usize, 20_usize)
+        Config::with_values(seed, 12_u8, 20_usize)
     }
 
-    pub fn with_seed_and_word_count(seed: Option<usize>, word_count: usize) -> Config {
+    /// construct with seed and word count
+    pub fn with_seed_and_word_count(seed: Option<usize>, word_count: u8) -> Config {
         Config::with_values(seed, word_count, 20_usize)
     }
-    pub fn with_values(seed: Option<usize>, word_count: usize, limit: usize) -> Config {
+
+    /// construct with all values
+    pub fn with_values(seed: Option<usize>, word_count: u8, limit: usize) -> Config {
         Config {
             seed,
             word_count,
-            limit
+            limit,
         }
     }
 }
@@ -95,7 +98,7 @@ impl PassPhrase {
     }
 
     /// generate a single phrase/line of word_count words
-    pub fn generate_idx(&self, rng: &fastrand::Rng, word_count: usize) -> Vec<usize> {
+    pub fn generate_idx(&self, rng: &fastrand::Rng, word_count: u8) -> Vec<usize> {
         (0..word_count).map(|_| rng.usize(..BIP39_LENGTH)).collect()
     }
 
