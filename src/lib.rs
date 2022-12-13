@@ -1,5 +1,4 @@
 /// generate a list of random passphrase words
-
 pub mod words;
 
 /// the current app version

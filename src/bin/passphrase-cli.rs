@@ -1,37 +1,34 @@
-
-use passphrase::words::PassPhrase;
 use anyhow::Result;
+use log::info;
+use passphrase::words::{Config, PassPhrase};
 use std::env;
 
 fn main() -> Result<()> {
     // command line arg: --seed
-    let phrase = PassPhrase::new();
+    let pp = PassPhrase::new();
 
     if env::args().len() >= 2 {
         fastrand::seed(19501103);
     }
 
     // command line arg: --show-indexes
-    let show_indexes = false;
-    
+    // let show_indexes = false;
+
     // command line arg: --size
-    let size = 12_usize;
+    // let size = 12_usize;
 
     // command line arg: --count
-    let count = 20_usize;
+    // let count = 20_usize;
 
-    let rng = fastrand::Rng::new();
-    (1..=count).for_each(|x| {
-        let idx_list = phrase.generate_idx(&rng, size);
-        if show_indexes {
-            println!("{} {:?}", x, &idx_list);
-        }
+    // the default
+    let config = Config::new();
 
-        let words = phrase.get_words(idx_list);
-
-        println!("{:02} {}", x, words.join("-"));
-    });
+    let phrases = pp.generate_list(config);
+    info!("{:?}", &phrases);
+    for phrase in phrases.phrase_list {
+        println!("{} {:?}", &phrase.line_number, &phrase.index_list);
+        println!("{} {:?}", &phrase.line_number, &phrase.word_list);
+    }
 
     Ok(())
 }
-

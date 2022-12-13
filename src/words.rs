@@ -1,62 +1,96 @@
-
 use log::info;
 // use serde::
-use crate::{BIP39_WORDS, BIP39_LENGTH};
+use crate::{BIP39_LENGTH, BIP39_WORDS};
+
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct Config {
+    pub seed: Option<usize>,
+    pub word_count: usize,
+    pub limit: usize,
+}
+
+impl Config {
+    /// create a new config struct with default values
+    pub fn new() -> Config {
+        Config {
+            seed: None,
+            word_count: 12,
+            limit: 20_usize,
+        }
+    }
+}
 
 #[derive(Debug, Default, Clone)]
-pub struct Phrases {
-    pub seed: Option<usize>,
+pub struct Phrase {
+    pub line_number: usize,
     pub index_list: Vec<usize>,
-    pub phrase_list: Vec<String>,
-    pub limit: usize,
-    pub offset: usize,
+    pub word_list: Vec<String>,
+}
+
+/// a collection of generated phrases
+#[derive(Debug, Default, Clone)]
+pub struct Phrases {
+    pub config: Config,
+    pub phrase_list: Vec<Phrase>,
 }
 
 impl Phrases {
-    pub fn new() -> Phrases {
+    /// create a new Phrases struct with default values
+    pub fn new(config: Config, phrase_list: Vec<Phrase>) -> Phrases {
         Phrases {
-            seed: None,
-            index_list: vec![],
-            phrase_list: vec![],
-            limit: BIP39_LENGTH,
-            offset: 0_usize,
+            config,
+            phrase_list,
         }
     }
 }
 
 #[derive(Debug, Default, Clone)]
-pub struct PassPhrase {
-}
+pub struct PassPhrase {}
 
 impl PassPhrase {
     pub fn new() -> PassPhrase {
-        PassPhrase {
+        PassPhrase {}
+    }
+
+    /// generate a list of words following config rules for seed, words-per-line-count, offset and limit
+    pub fn generate_list(&self, config: Config) -> Phrases {
+        info!("generate list with config: {:?}", &config);
+
+        let rng = fastrand::Rng::new();
+        let len = config.limit;
+
+        let mut phrases = Vec::with_capacity(len);
+
+        (1..=len).for_each(|n| {
+            let index_list = self.generate_idx(&rng, config.word_count);
+            let word_list = self.get_words(index_list.clone());
+
+            phrases.push(Phrase {
+                line_number: n,
+                index_list,
+                word_list,
+            });
+        });
+        // do a skip for the offset
+
+        Phrases {
+            config,
+            phrase_list: phrases,
         }
     }
 
-    pub fn generate_list(&self, seed: Option<usize>, offset: usize, limit: usize) -> Phrases {
-        let limit = if limit == 0 || limit > BIP39_LENGTH {
-            BIP39_LENGTH
-        } else {
-            limit
-        };
-
-        info!("generate list with seed: {:?}, offset: {}, limit: {}", seed, offset, limit);
-        let mut ilist = vec![];
-        let mut plist = vec![];
-
-        Phrases { seed, index_list: ilist, phrase_list: plist, limit, offset }
+    /// generate a single phrase/line of word_count words
+    pub fn generate_idx(&self, rng: &fastrand::Rng, word_count: usize) -> Vec<usize> {
+        (0..word_count).map(|_| rng.usize(..BIP39_LENGTH)).collect()
     }
 
-    pub fn generate_idx(&self, rng: &fastrand::Rng, len: usize) -> Vec<usize> {
-        (0..len).map(|_| rng.usize(..BIP39_LENGTH )).collect()
-    }
-
+    /// fetch the words from the source using the random list
     pub fn get_words(&self, nlist: Vec<usize>) -> Vec<String> {
-        nlist.iter().map(|n| BIP39_WORDS.lines().nth(*n).unwrap().to_string() ).collect()
+        nlist
+            .iter()
+            .map(|n| BIP39_WORDS.lines().nth(*n).unwrap().to_string())
+            .collect()
     }
-
-
 }
 
 #[cfg(test)]
@@ -64,8 +98,29 @@ mod tests {
     use super::*;
 
     #[test]
+    fn generate_list() {
+        let config = Config::new();
+        let pp = PassPhrase::new();
+        let p = pp.generate_list(config.clone());
+
+        println!("{:?}", p);
+
+        assert_eq!(p.config, config);
+    }
+
+    #[test]
     fn new_phrases() {
-        let pp = Phrases::new();
-        assert_eq!(pp.seed, None);
+        let config = Config::new();
+        let list: Vec<Phrase> = vec![];
+        let p = Phrases::new(config, list);
+        assert_eq!(p.config.seed, None);
+    }
+
+    #[test]
+    fn new_config() {
+        let config = Config::new();
+        assert_eq!(config.seed, None);
+        assert_eq!(config.word_count, 12);
+        assert_eq!(config.limit, 20);
     }
 }
