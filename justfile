@@ -28,12 +28,17 @@ docs:
 
 # run the key-service back-end; start the db if necessary
 run:
-    cargo run --bin passphrase-cli
+    cargo run --bin passphrase
 
 # build the release
 release:
     clear
     cargo build --release --bins
+
+# install
+install:
+    just release
+    cp target/release/passphrase ~/.cargo/bin/
 
 # watch the current folders and run tests when a file is changed
 watch:

@@ -1,6 +1,6 @@
 /// Configuration for generating PassPhrases.
-/// 
-/// 
+///
+///
 use std::fs;
 
 use anyhow::Result;
