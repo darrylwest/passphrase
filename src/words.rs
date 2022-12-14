@@ -1,8 +1,12 @@
+use std::fs;
+
+use anyhow::Result;
 use log::info;
+use serde::{Deserialize, Serialize};
 // use serde::
 use crate::{BIP39_LENGTH, BIP39_WORDS};
 
-#[derive(Debug, Default, Clone, PartialEq, Eq)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Config {
     pub seed: Option<usize>,
     pub word_count: u8,
@@ -10,6 +14,15 @@ pub struct Config {
 }
 
 impl Config {
+    pub fn read_config(filename: &str) -> Result<Config> {
+        let text = fs::read_to_string(filename)?;
+
+        let config = toml::from_str(&text).unwrap();
+        info!("{:?}", config);
+
+        Ok(config)
+    }
+
     /// create a new config struct with default values
     pub fn new() -> Config {
         Config::with_values(None, 12_u8, 20_usize)
