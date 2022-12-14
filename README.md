@@ -47,10 +47,10 @@ Usage:
 ```bash
 passphrase --help
 
-passphrase-cli
+passphrase
 Generate one or more strong passphrases.
 
-Usage: passphrase-cli [OPTIONS]
+Usage: passphrase [OPTIONS]
 
 Options:
       --seed <SEED>                  set a seed for the ring generator
@@ -64,8 +64,36 @@ Options:
 
 _as of version 0.5.1_
 
+### Configuration File
+
+The configuration here creates a name, word count and limit values.
+
+```toml
+name = "my default passphrase config"
+# seed = <no seed>
+word_count = 6
+limit = 10
+```
+
+Sample output using the above configuration:
+
+```bash
+passphrase --config-file /path/to/config.toml
+
+[01] "midnight-capable-permit-betray-pattern-various"
+[02] "topple-already-depend-wheat-vault-option"
+[03] "van-split-try-rice-else-exit"
+[04] "hope-hammer-gloom-scrap-accident-vicious"
+[05] "uphold-bulb-symbol-hip-number-speed"
+[06] "panther-ignore-bring-security-bleak-fat"
+[07] "myth-business-mystery-social-acoustic-option"
+[08] "worth-above-rebuild-drive-element-aim"
+[09] "whip-october-swim-stem-potato-lens"
+[10] "genuine-empower-else-curve-rude-side"
+```
+
 ### Lib Use
 
 _TBD_
 
-###### darryl.west | 2022.12.13
+###### darryl.west | 2022.12.14
