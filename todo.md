@@ -2,7 +2,7 @@
 
 * add capability to generate json output
 * add --json to specify json output
-* add ability to combine with keyword to replace '-' delimiters
+* add ability to combine with keyword to replace '-' delimiters -> Xword0wordF
 * implement read config to read from file
 * unit, doc and integration tests
 * lib use cases: 
