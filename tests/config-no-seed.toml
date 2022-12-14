@@ -1,0 +1,9 @@
+#
+# just comment out seed and it's set to None
+#
+name = "tiburon.local"
+# seed = None
+word_count = 20
+limit = 10
+# also, it's possible to add attrs that will be ignored
+pick_line = 2

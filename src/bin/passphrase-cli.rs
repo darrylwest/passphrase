@@ -1,6 +1,7 @@
 use anyhow::Result;
 use log::info;
-use passphrase::words::{Config, PassPhrase};
+use passphrase::config::Config;
+use passphrase::words::PassPhrase;
 // use std::env;
 use clap::Parser;
 
@@ -25,7 +26,7 @@ pub struct Cli {
     #[clap(short, long, value_parser, default_value_t = 20_usize)]
     pub lines: usize,
 
-    /// read the gernator configuration from the specified Toml file
+    /// read the gernator configuration from the specified Toml file (overrides other settings)
     #[clap(short, long, value_parser)]
     pub config_file: Option<String>,
 }
@@ -43,7 +44,11 @@ fn main() -> Result<()> {
 
     // the default
     let pp = PassPhrase::new();
-    let config = Config::with_values(cli.seed, cli.phrase_words, cli.lines);
+    let config = if let Some(file) = cli.config_file {
+        Config::read_config(&file)?
+    } else {
+        Config::with_values("none", cli.seed, cli.phrase_words, cli.lines)
+    };
 
     let phrases = pp.generate_list(config);
     info!("{:?}", &phrases);

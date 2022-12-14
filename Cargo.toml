@@ -1,11 +1,11 @@
 [package]
 name = "passphrase"
-version = "0.5.2"
+version = "0.5.3"
 edition = "2021"
 authors = ["darryl.west@raincitysoftware.com"]
 rust-version = "1.65"
-description = "random word generator"
-keywords = ["keys", "secrets", "cli" ]
+description = "random passphrase word generator based on BIP39 word list"
+keywords = ["keys", "secrets", "cli", "passphrase"]
 license = "MIT OR Apach-2.0"
 readme = "README.md"
 homepage = "https://github.com/darrylwest/passphrase"

@@ -1,0 +1,7 @@
+#
+# line 25
+#
+name = "plaza.local"
+seed = 1234
+word_count = 10
+limit = 100

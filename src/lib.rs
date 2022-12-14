@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 /// generate a list of random passphrase words
+pub mod config;
 pub mod words;
 
 /// the current app version
