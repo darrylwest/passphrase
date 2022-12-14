@@ -1,9 +1,10 @@
+//! CLI for passphrase
+//!
 use anyhow::Result;
+use clap::Parser;
 use log::info;
 use passphrase::config::Config;
 use passphrase::words::PassPhrase;
-// use std::env;
-use clap::Parser;
 
 #[derive(Debug, Default, Parser)]
 #[clap(name = "passphrase-cli")]
@@ -47,7 +48,8 @@ fn main() -> Result<()> {
     let config = if let Some(file) = cli.config_file {
         Config::read_config(&file)?
     } else {
-        Config::with_values("none", cli.seed, cli.phrase_words, cli.lines)
+        let name = Config::default_name();
+        Config::with_values(&name, cli.seed, cli.phrase_words, cli.lines)
     };
 
     let phrases = pp.generate_list(config);

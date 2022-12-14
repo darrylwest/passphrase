@@ -1,8 +1,12 @@
+/// Configuration for generating PassPhrases.
+/// 
+/// 
 use std::fs;
 
 use anyhow::Result;
 use log::info;
 use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Config {
@@ -24,17 +28,20 @@ impl Config {
 
     /// create a new config struct with default values
     pub fn new() -> Config {
-        Config::with_values("", None, 12_u8, 20_usize)
+        let name = Self::default_name();
+        Config::with_values(&name, None, 12_u8, 20_usize)
     }
 
     /// create config with the seed
     pub fn with_seed(seed: Option<usize>) -> Config {
-        Config::with_values("", seed, 12_u8, 20_usize)
+        let name = Self::default_name();
+        Config::with_values(&name, seed, 12_u8, 20_usize)
     }
 
     /// construct with seed and word count
     pub fn with_seed_and_word_count(seed: Option<usize>, word_count: u8) -> Config {
-        Config::with_values("", seed, word_count, 20_usize)
+        let name = Self::default_name();
+        Config::with_values(&name, seed, word_count, 20_usize)
     }
 
     /// construct with all values
@@ -46,11 +53,27 @@ impl Config {
             limit,
         }
     }
+
+    /// return the default config name, e.g. system time as seconds
+    pub fn default_name() -> String {
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .expect("should get the current system time");
+
+        format!("{}", now.as_secs())
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn default_name() {
+        let name = Config::default_name();
+        println!("{}", name);
+        assert!(name.len() > 8)
+    }
 
     #[test]
     fn read_config() {

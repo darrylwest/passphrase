@@ -1,6 +1,7 @@
+/// words library to support passphrase cli.
+///
 use crate::config::Config;
 use crate::{BIP39_LENGTH, BIP39_WORDS};
-/// words.
 use log::info;
 
 #[derive(Debug, Default, Clone)]
