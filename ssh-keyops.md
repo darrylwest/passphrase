@@ -25,7 +25,7 @@ You should rotate the passphrase often, at least once per month especially if yo
 
 * generate a new passphrase: `passphrase-cli [options]
 * get a copy of your current passphrase: `print <key> | pbcopy`
-* run this `ssh-keygen -t ed25519 -p`
+* run this `ssh-keygen -f ~/.ssh/ed25519 -t ed25519 -p`
 * paste in the current password
 * copy/paste in the new password (twice)
 
