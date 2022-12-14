@@ -29,6 +29,4 @@ You should rotate the passphrase often, at least once per month especially if yo
 * paste in the current password
 * copy/paste in the new password (twice)
 
-_you may have to re-add this to the ssh-agent after changing passwords_
-
 ###### darryl.west | 2022-12-14
