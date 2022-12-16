@@ -12,7 +12,7 @@ A library and CLI that generates BIP39 and other dictionary based random words u
 
 ### Overview
 
-Generate one or more lines of random passphrase words from BIP39 word list.  The CLI supports controlling the number of lines to output, the number of words per phrase and other attributes.
+Generate one or more lines of random passphrase words from BIP39 word list.  The CLI supports controlling the number of lines to output, the number of words per phrase, etc.
 
 Example Output:
 
